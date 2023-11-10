@@ -3,7 +3,7 @@ package com.amigosCode.demo.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,23 +23,26 @@ public class StudentController {
   private StudentService studentService;
 
   @GetMapping("api/v1/students")
-  public List<Student> getAllStudents() {
-    return studentService.getStudents();
+  public ResponseEntity<List<Student>> getAllStudents() {
+    return ResponseEntity.ok(studentService.getStudents());
   }
 
   @PostMapping("api/v1/students")
-  public void registerNewStudent(@RequestBody Student student) {
+  public ResponseEntity<Student> registerNewStudent(@RequestBody Student student) {
     studentService.addNewStudent(student);
+    return ResponseEntity.created(null).body(student);
   }
 
   @DeleteMapping("api/v1/students/{studentId}")
-  public void deleteStudent(@PathVariable Integer studentId) {
+  public ResponseEntity<?> deleteStudent(@PathVariable Integer studentId) {
     studentService.deleteStudent(studentId);
+    return ResponseEntity.noContent().build();
   }
 
   @PutMapping("api/v1/students/{studentId}")
-  public void updateStudent(@PathVariable Integer studentId, @RequestParam(required = false) String name,
+  public ResponseEntity<?> updateStudent(@PathVariable Integer studentId, @RequestParam(required = false) String name,
       @RequestParam(required = false) String email) {
     studentService.updateStudent(studentId, name, email);
+    return ResponseEntity.ok().build();
   }
 }
