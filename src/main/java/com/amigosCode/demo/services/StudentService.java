@@ -22,6 +22,14 @@ public class StudentService {
     return studentRepository.findAll();
   }
 
+  public Student getAStudent(Integer studentId) {
+    Student student = studentRepository.findById(studentId).orElse(null);
+    if (student == null) {
+      throw new IllegalStateException("Student with ID " + studentId + " not found");
+    }
+    return student;
+  }
+
   public void addNewStudent(Student newStudent) {
     boolean studentExists = studentRepository.existsByEmail(newStudent.getEmail());
     if (!studentExists) {
@@ -45,12 +53,8 @@ public class StudentService {
     if (!studentRepository.existsById(studentId)) {
       throw new IllegalStateException("Student with ID " + studentId + " does not exist");
     }
-
     // Retrieve student from database
     Student student = studentRepository.findById(studentId).orElse(null);
-    if (student == null) {
-      throw new IllegalStateException("Student not found");
-    }
     // Update student name and email if provided
     if (name != null && !student.getName().equals(name)) {
       student.setName(name);
