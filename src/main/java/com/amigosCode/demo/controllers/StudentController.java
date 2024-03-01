@@ -35,7 +35,7 @@ public class StudentController {
   @PostMapping("api/v1/students")
   public ResponseEntity<Student> registerNewStudent(@RequestBody Student student) {
     studentService.addNewStudent(student);
-    return ResponseEntity.created(null).body(student);
+    return ResponseEntity.ok(student);
   }
 
   @DeleteMapping("api/v1/students/{studentId}")
