@@ -1,0 +1,31 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker Compose reference guide at
+# https://docs.docker.com/go/compose-spec-reference/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+services:
+  java_api:
+    container_name: java_api
+    image: java_api:1.0.0
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      - DATABASE_URL=jdbc:postgresql://java_db:5432/student
+      - DATABASE_USERNAME=franco
+      - DATABASE_PASSWORD=1234
+    depends_on:
+      - java_db
+  java_db:
+    container_name: java_db
+    image: postgres:13.3
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: franco
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: student
