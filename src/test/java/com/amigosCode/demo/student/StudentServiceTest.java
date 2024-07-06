@@ -22,28 +22,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import com.amigosCode.demo.db.StudentRepository;
-import com.amigosCode.demo.models.Student;
-import com.amigosCode.demo.services.StudentService;
+import com.amigosCode.demo.dto.StudentDTO;
+import com.amigosCode.demo.mapper.StudentDTOToStudent;
+import com.amigosCode.demo.persistence.entity.Student;
+import com.amigosCode.demo.persistence.repository.StudentRepository;
+import com.amigosCode.demo.service.StudentService;
 
 @ExtendWith(MockitoExtension.class)
 public class StudentServiceTest {
 
   @Mock
   private StudentRepository studentRepository;
-  // private AutoCloseable autoCloseable;
   private StudentService underTest;
 
   @BeforeEach
   void setUp() {
     // autoCloseable = MockitoAnnotations.openMocks(this);
-    underTest = new StudentService(studentRepository);
+    underTest = new StudentService(studentRepository, new StudentDTOToStudent());
   }
-
-  // @AfterEach
-  // void tearDown() throws Exception {
-  // autoCloseable.close();
-  // }
 
   @Test
   void canGetStudents() {
@@ -86,33 +82,29 @@ public class StudentServiceTest {
 
   @Test
   void canAddNewStudent() {
-    // given
-    Student student = new Student("Carlos", "carlos@gmail.com", LocalDate.of(1990, 10, 19));
-    // when
-    underTest.addNewStudent(student);
-    // then
+    // Given
+    StudentDTO studentDTO = new StudentDTO("Alice", "alice@example.com", LocalDate.of(2000, 1, 1));
+    Student student = new Student("Alice", "alice@example.com", LocalDate.of(2000, 1, 1));
+    when(studentRepository.existsByEmail("alice@example.com")).thenReturn(false);
+    // When
+    underTest.addNewStudent(studentDTO);
+
+    // Then
     ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
-
     verify(studentRepository).save(studentArgumentCaptor.capture());
-
     Student capturedStudent = studentArgumentCaptor.getValue();
+    assertThat(capturedStudent.getName()).isEqualTo(student.getName());
+    assertThat(capturedStudent.getEmail()).isEqualTo(student.getEmail());
 
-    System.out.println(capturedStudent.getName());
-    assertThat(capturedStudent).isEqualTo(student);
-    // System.out.println(studentRepository.count());
-    // verify(studentRepository).save(student);
   }
 
   @Test
   void addNewStudentWhenEmailTaken() {
     // given
-    Student student = new Student("Carlos", "carlos@gmail.com", LocalDate.of(1990, 10, 19));
-    // Student invalidStudent = new Student("Martin", "carlos@gmail.com",
-    // LocalDate.of(1990, 10, 19));
+    StudentDTO student = new StudentDTO("Carlos", "carlos@gmail.com", LocalDate.of(1990, 10, 19));
 
     // when
     given(studentRepository.existsByEmail(student.getEmail())).willReturn(true);
-    // underTest.addNewStudent(invalidStudent);
     // then
     assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(() -> underTest.addNewStudent(student))

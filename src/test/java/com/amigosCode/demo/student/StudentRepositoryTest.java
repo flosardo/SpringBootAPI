@@ -1,7 +1,7 @@
 package com.amigosCode.demo.student;
 
-import com.amigosCode.demo.db.StudentRepository;
-import com.amigosCode.demo.models.Student;
+import com.amigosCode.demo.persistence.entity.Student;
+import com.amigosCode.demo.persistence.repository.StudentRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
