@@ -1,4 +1,4 @@
-package com.amigosCode.demo.models;
+package com.amigosCode.demo.persistence.entity;
 
 import java.time.LocalDate;
 import java.time.Period;

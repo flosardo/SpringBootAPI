@@ -1,8 +1,8 @@
-package com.amigosCode.demo.db;
+package com.amigosCode.demo.persistence.repository;
 
 import org.springframework.stereotype.Repository;
 
-import com.amigosCode.demo.models.Student;
+import com.amigosCode.demo.persistence.entity.Student;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
